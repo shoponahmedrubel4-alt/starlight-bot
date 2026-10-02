@@ -17,7 +17,7 @@ process.env.TZ = 'Asia/Dhaka';
 // Deplexo-তে /data persistent storage ব্যবহার করবে
 // Local computer-এ ./auth_info ব্যবহার করবে
 const AUTH_DIR =
-  process.env.AUTH_DIR || './auth_info';
+  process.env.AUTH_DIR || '/data/auth_info';
 
 
 // ======================================================
