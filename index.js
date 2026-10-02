@@ -3,16 +3,286 @@ import makeWASocket, {
   DisconnectReason
 } from '@whiskeysockets/baileys';
 
-import qrcode from 'qrcode-terminal';
+import QRCode from 'qrcode';
 import pino from 'pino';
+import http from 'http';
 
 
 // ======================================================
 // ⚙️ SETTINGS
 // ======================================================
 
-// Bangladesh Time
 process.env.TZ = 'Asia/Dhaka';
+
+// Deplexo-তে /data persistent storage ব্যবহার করবে
+// Local computer-এ ./auth_info ব্যবহার করবে
+const AUTH_DIR =
+  process.env.AUTH_DIR || './auth_info';
+
+
+// ======================================================
+// 🌐 HEALTH SERVER
+// ======================================================
+
+const PORT = Number(
+  process.env.PORT || 3000
+);
+
+let currentQR = null;
+let botConnected = false;
+
+const server = http.createServer(
+  async (req, res) => {
+
+    // ==========================
+    // HEALTH CHECK
+    // ==========================
+
+    if (
+      req.url === '/' ||
+      req.url === '/health'
+    ) {
+
+      res.writeHead(
+        200,
+        {
+          'Content-Type':
+            'text/html; charset=utf-8'
+        }
+      );
+
+      const qrSection = currentQR
+        ? `
+          <div class="qr-box">
+            <h2>WhatsApp Login</h2>
+
+            <p>
+              WhatsApp → Linked Devices
+              → Link a Device
+            </p>
+
+            <img
+              src="${currentQR}"
+              alt="WhatsApp QR Code"
+            />
+
+            <p class="small">
+              QR Code scan করে WhatsApp Bot
+              connect করুন।
+            </p>
+          </div>
+        `
+        : `
+          <div class="status">
+            ${
+              botConnected
+                ? '✅ WhatsApp Bot Connected'
+                : '⏳ Waiting for WhatsApp...'
+            }
+          </div>
+        `;
+
+      res.end(`
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0"
+>
+
+<title>Starlight Family Bot</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family:
+    Arial,
+    sans-serif;
+
+  background:
+    linear-gradient(
+      135deg,
+      #07111f,
+      #101b32,
+      #17243c
+    );
+
+  color: white;
+
+  padding: 20px;
+}
+
+.card {
+
+  width: 100%;
+  max-width: 460px;
+
+  padding: 30px;
+
+  border-radius: 28px;
+
+  background:
+    rgba(255,255,255,0.08);
+
+  border:
+    1px solid
+    rgba(255,255,255,0.14);
+
+  box-shadow:
+    0 25px 70px
+    rgba(0,0,0,0.45);
+
+  text-align: center;
+
+  backdrop-filter:
+    blur(20px);
+}
+
+.logo {
+
+  font-size: 26px;
+  font-weight: 700;
+
+  margin-bottom: 8px;
+}
+
+.subtitle {
+
+  opacity: .65;
+  font-size: 14px;
+
+  margin-bottom: 25px;
+}
+
+.qr-box {
+
+  background: white;
+
+  color: #111;
+
+  padding: 20px;
+
+  border-radius: 22px;
+}
+
+.qr-box img {
+
+  width: 100%;
+  max-width: 300px;
+
+  display: block;
+
+  margin: 20px auto;
+
+}
+
+.qr-box h2 {
+
+  margin-top: 0;
+
+}
+
+.qr-box p {
+
+  font-size: 14px;
+
+}
+
+.small {
+
+  opacity: .65;
+
+}
+
+.status {
+
+  padding: 25px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(255,255,255,0.08);
+
+  font-size: 18px;
+
+}
+
+.footer {
+
+  margin-top: 20px;
+
+  font-size: 12px;
+
+  opacity: .45;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="logo">
+    Starlight Family
+  </div>
+
+  <div class="subtitle">
+    WhatsApp Automation Bot
+  </div>
+
+  ${qrSection}
+
+  <div class="footer">
+    Bot Server • Asia/Dhaka
+  </div>
+
+</div>
+
+</body>
+
+</html>
+      `);
+
+      return;
+    }
+
+    res.writeHead(404);
+    res.end('Not Found');
+
+  }
+);
+
+
+server.listen(
+  PORT,
+  '0.0.0.0',
+  () => {
+
+    console.log(
+      `🌐 Health server running on port ${PORT}`
+    );
+
+  }
+);
+
 
 // ======================================================
 // ⚙️ AUTOMATIC SCHEDULE
@@ -43,14 +313,13 @@ const schedule = [
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
 
-
   // 🕌 DUHR - GROUP OFF
   {
     time: '13:15',
     action: 'off',
     message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
 
-𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖 𝑨𝒍𝒂𝒊𝒌𝒖𝒎 🤍
+𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
 🕌 নামাজের সময় হওয়ায়
 
@@ -62,7 +331,6 @@ const schedule = [
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
-
 
   // 🕌 DUHR - GROUP ON
   {
@@ -70,7 +338,7 @@ const schedule = [
     action: 'on',
     message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
 
-𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖 𝑨𝒍𝒂𝒊𝒌𝒖𝒎 🤍
+𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
 ✨ নামাজ শেষ হয়েছে,
 
@@ -82,7 +350,6 @@ const schedule = [
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
-
 
   // 🕌 ASR - GROUP OFF
   {
@@ -90,7 +357,7 @@ const schedule = [
     action: 'off',
     message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
 
-𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖 𝑨𝒍𝒂𝒊𝒌𝒖𝒎 🤍
+𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
 🕌 নামাজের সময় হওয়ায়
 
@@ -102,7 +369,6 @@ const schedule = [
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
-
 
   // 🕌 ASR - GROUP ON
   {
@@ -110,7 +376,7 @@ const schedule = [
     action: 'on',
     message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
 
-𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖 𝑨𝒍𝒂𝒊𝒌𝒖𝒎 🤍
+𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
 ✨ নামাজ শেষ হয়েছে,
 
@@ -122,7 +388,6 @@ const schedule = [
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
-
 
   // 🕌 MAGHRIB - GROUP OFF
   {
@@ -130,7 +395,7 @@ const schedule = [
     action: 'off',
     message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
 
-𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖 𝑨𝒍𝒂𝒊𝒌𝒖𝒎 🤍
+𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
 🕌 নামাজের সময় হওয়ায়
 
@@ -142,7 +407,6 @@ const schedule = [
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
-
 
   // 🕌 MAGHRIB - GROUP ON
   {
@@ -150,7 +414,7 @@ const schedule = [
     action: 'on',
     message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
 
-𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖 𝑨𝒍𝒂𝒊𝒌𝒖𝒎 🤍
+𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
 ✨ নামাজ শেষ হয়েছে,
 
@@ -163,14 +427,13 @@ const schedule = [
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
 
-
   // 🕌 ISHA - GROUP OFF
   {
     time: '20:00',
     action: 'off',
     message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
 
-𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖 𝑨𝒍𝒂𝒊𝒌𝒖𝒎 🤍
+𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
 🕌 নামাজের সময় হওয়ায়
 
@@ -183,14 +446,13 @@ const schedule = [
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
 
-
   // 🕌 ISHA - GROUP ON
   {
     time: '20:30',
     action: 'on',
     message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
 
-𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖 𝑨𝒍𝒂𝒊𝒌𝒖𝒎 🤍
+𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
 ✨ নামাজ শেষ হয়েছে,
 
@@ -202,7 +464,6 @@ const schedule = [
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
-
 
   // 🌙 NIGHT - GROUP OFF
   {
@@ -212,7 +473,7 @@ const schedule = [
 
 🔕 𝐆𝐑𝐎𝐔𝐏 𝐎𝐅𝐅 🔕
 
-🌷 𝐀𝐬𝐬𝐚𝐥𝐚𝐦𝐮 𝐀𝐥𝐚𝐢𝐤𝐮𝐦 🤍
+🌷 𝐀𝐬𝐬𝐚𝐥𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
 🌙 রাতের নীরবতা ও আদব বজায় রাখতে
 
@@ -238,43 +499,80 @@ const schedule = [
 // ======================================================
 
 let scheduleStarted = false;
+
 let lastExecuted = {};
 
 function getCurrentTime() {
 
   const now = new Date();
 
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const hours =
+    String(now.getHours())
+      .padStart(2, '0');
+
+  const minutes =
+    String(now.getMinutes())
+      .padStart(2, '0');
 
   return `${hours}:${minutes}`;
 }
 
 
+function getLocalDate() {
+
+  const now = new Date();
+
+  const year =
+    now.getFullYear();
+
+  const month =
+    String(now.getMonth() + 1)
+      .padStart(2, '0');
+
+  const day =
+    String(now.getDate())
+      .padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+
+// ======================================================
+// ⏰ AUTOMATIC SCHEDULE
+// ======================================================
+
 async function runAutomaticSchedule(sock) {
 
   try {
 
-    const groups = await sock.groupFetchAllParticipating();
+    const groups =
+      await sock.groupFetchAllParticipating();
 
-    const groupIds = Object.keys(groups);
+    const groupIds =
+      Object.keys(groups);
 
-    // Bot যে group-এ আছে তার মধ্যে
-    // প্রথম group-টিকে automatic group হিসেবে ব্যবহার করবে
     if (groupIds.length === 0) {
-      console.log('⚠️ কোনো group পাওয়া যায়নি.');
+
+      console.log(
+        '⚠️ কোনো group পাওয়া যায়নি.'
+      );
+
       return;
     }
 
-    const groupId = groupIds[0];
+    const groupId =
+      groupIds[0];
 
-    const currentTime = getCurrentTime();
+    const currentTime =
+      getCurrentTime();
 
-    const today = new Date().toISOString().split('T')[0];
+    const today =
+      getLocalDate();
 
     for (const item of schedule) {
 
-      const uniqueKey = `${today}_${item.time}_${item.action}`;
+      const uniqueKey =
+        `${today}_${item.time}_${item.action}`;
 
       if (
         item.time === currentTime &&
@@ -294,7 +592,9 @@ async function runAutomaticSchedule(sock) {
               'announcement'
             );
 
-            console.log('🔒 Automatic Group OFF');
+            console.log(
+              '🔒 Automatic Group OFF'
+            );
 
           }
 
@@ -305,17 +605,24 @@ async function runAutomaticSchedule(sock) {
               'not_announcement'
             );
 
-            console.log('🔓 Automatic Group ON');
+            console.log(
+              '🔓 Automatic Group ON'
+            );
 
           }
 
-          await sock.sendMessage(groupId, {
-            text: item.message
-          });
+          await sock.sendMessage(
+            groupId,
+            {
+              text: item.message
+            }
+          );
 
           lastExecuted[uniqueKey] = true;
 
-          console.log('✅ Automatic message sent.');
+          console.log(
+            '✅ Automatic message sent.'
+          );
 
         } catch (error) {
 
@@ -325,7 +632,9 @@ async function runAutomaticSchedule(sock) {
           );
 
         }
+
       }
+
     }
 
   } catch (error) {
@@ -336,6 +645,7 @@ async function runAutomaticSchedule(sock) {
     );
 
   }
+
 }
 
 
@@ -345,23 +655,38 @@ async function runAutomaticSchedule(sock) {
 
 async function startBot() {
 
-  const { state, saveCreds } =
-    await useMultiFileAuthState('./auth_info');
+  console.log(
+    `\n🔐 Auth directory: ${AUTH_DIR}\n`
+  );
 
-  const sock = makeWASocket({
+  const {
+    state,
+    saveCreds
+  } =
+    await useMultiFileAuthState(
+      AUTH_DIR
+    );
 
-    auth: state,
+  const sock =
+    makeWASocket({
 
-    logger: pino({
-      level: 'silent'
-    }),
+      auth: state,
 
-    printQRInTerminal: false
+      logger:
+        pino({
+          level: 'silent'
+        }),
 
-  });
+      printQRInTerminal:
+        false
+
+    });
 
 
-  // Save login credentials
+  // ====================================================
+  // 💾 SAVE CREDENTIALS
+  // ====================================================
+
   sock.ev.on(
     'creds.update',
     saveCreds
@@ -374,29 +699,62 @@ async function startBot() {
 
   sock.ev.on(
     'connection.update',
-    ({ connection, lastDisconnect, qr }) => {
+    async ({
+      connection,
+      lastDisconnect,
+      qr
+    }) => {
+
+      // ================================================
+      // 📱 NEW QR
+      // ================================================
 
       if (qr) {
 
-        console.log(
-          '\n📱 WhatsApp QR Code:\n'
-        );
+        try {
 
-        qrcode.generate(
-          qr,
-          {
-            small: true
-          }
-        );
+          currentQR =
+            await QRCode.toDataURL(
+              qr,
+              {
+                width: 320,
+                margin: 2
+              }
+            );
 
-        console.log(
-          '\nএই QR Code তোমার Bot WhatsApp নম্বর দিয়ে scan করো.\n'
-        );
+          console.log(
+            '\n📱 NEW WHATSAPP QR GENERATED'
+          );
+
+          console.log(
+            '🌐 Open your Deplexo app URL to scan the QR.'
+          );
+
+          console.log(
+            '📱 WhatsApp → Linked Devices → Link a Device\n'
+          );
+
+        } catch (error) {
+
+          console.log(
+            '❌ QR generation failed:',
+            error
+          );
+
+        }
 
       }
 
 
+      // ================================================
+      // ✅ CONNECTED
+      // ================================================
+
       if (connection === 'open') {
+
+        botConnected = true;
+
+        currentQR = null;
 
         console.log(
           '\n================================='
@@ -423,25 +781,51 @@ async function startBot() {
       }
 
 
+      // ================================================
+      // ❌ CLOSED
+      // ================================================
+
       if (connection === 'close') {
 
+        botConnected = false;
+
+        currentQR = null;
+
+        const statusCode =
+          lastDisconnect
+            ?.error
+            ?.output
+            ?.statusCode;
+
         const shouldReconnect =
-          lastDisconnect?.error?.output?.statusCode
-          !== DisconnectReason.loggedOut;
+          statusCode !==
+          DisconnectReason.loggedOut;
 
 
         console.log(
           '❌ WhatsApp connection closed.'
         );
 
+        console.log(
+          'Status:',
+          statusCode
+        );
+
 
         if (shouldReconnect) {
 
           console.log(
-            '🔄 Reconnecting...'
+            '🔄 Reconnecting in 5 seconds...'
           );
 
-          startBot();
+          scheduleStarted = false;
+
+          setTimeout(
+            () => {
+              startBot();
+            },
+            5000
+          );
 
         } else {
 
@@ -478,7 +862,9 @@ async function startBot() {
       );
 
 
-      if (event.action !== 'add') {
+      if (
+        event.action !== 'add'
+      ) {
 
         console.log(
           'ℹ️ Action:',
@@ -491,10 +877,12 @@ async function startBot() {
 
 
       for (
-        const participant of event.participants
+        const participant of
+        event.participants
       ) {
 
-        const jid = participant.id;
+        const jid =
+          participant.id;
 
         const number =
           jid.split('@')[0];
@@ -515,7 +903,9 @@ Starlight Family-তে তোমাকে আন্তরিকভাবে স
 
 সবাই মিলে সুন্দরভাবে আড্ডা দিই এবং একে অপরকে সম্মান করি। 🌸`,
 
-              mentions: [jid]
+              mentions: [
+                jid
+              ]
 
             }
           );
@@ -549,14 +939,22 @@ Starlight Family-তে তোমাকে আন্তরিকভাবে স
     'messages.upsert',
     async ({ messages }) => {
 
-      const msg = messages[0];
-
-
-      if (!msg.message) return;
+      const msg =
+        messages[0];
 
 
       if (
-        !msg.key.remoteJid?.endsWith('@g.us')
+        !msg ||
+        !msg.message
+      ) {
+        return;
+      }
+
+
+      if (
+        !msg.key.remoteJid?.endsWith(
+          '@g.us'
+        )
       ) {
         return;
       }
@@ -569,14 +967,18 @@ Starlight Family-তে তোমাকে আন্তরিকভাবে স
 
 
       const command =
-        text.trim().toLowerCase();
+        text
+          .trim()
+          .toLowerCase();
 
 
-      // ==========================
+      // ==============================================
       // 🔒 MANUAL OFF
-      // ==========================
+      // ==============================================
 
-      if (command === '/off') {
+      if (
+        command === '/off'
+      ) {
 
         try {
 
@@ -618,11 +1020,13 @@ Starlight Family-তে তোমাকে আন্তরিকভাবে স
       }
 
 
-      // ==========================
+      // ==============================================
       // 🔓 MANUAL ON
-      // ==========================
+      // ==============================================
 
-      if (command === '/on') {
+      if (
+        command === '/on'
+      ) {
 
         try {
 
@@ -693,4 +1097,13 @@ Starlight Family-তে তোমাকে আন্তরিকভাবে স
 // 🚀 RUN
 // ======================================================
 
-startBot();
+startBot().catch(
+  (error) => {
+
+    console.error(
+      '❌ Bot startup failed:',
+      error
+    );
+
+  }
+);
