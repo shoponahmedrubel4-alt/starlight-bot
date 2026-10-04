@@ -273,7 +273,7 @@ async function sendText(sock, groupId, text, mentions = []) {
 
 async function setGroupMode(sock, groupId, action) {
   if (!(await botIsAdmin(sock, groupId))) {
-    throw new Error('Bot is not a group admin');
+    throw new Error('Agent is not a group admin');
   }
   return sock.groupSettingUpdate(
     groupId,
@@ -432,7 +432,7 @@ const funny = {
   roast: [
     '🔥 আজকের Roast: {name} — আপনার reply speed দেখে Wi‑Fi-ও insecure! 😂',
     '😂 {name}-কে active দেখা গেছে! নিশ্চয়ই আজ group-এ attendance দিতে এসেছেন!',
-    '👀 {name}, এত চুপ কেন? Bot আপনাকে suspicious list-এ রাখছে! 😆',
+    '👀 {name}, এত চুপ কেন? Agent আপনাকে suspicious list-এ রাখছে! 😆',
     '🤣 {name} online আছেন, কিন্তু কাজের বেলায় “network problem”!'
   ],
   fortune: [
@@ -513,7 +513,7 @@ const dashboardCommands = [
 const server = http.createServer((req, res) => {
   if (req.url === '/api/status') {
     const payload = {
-      connected: botConnected,
+      connected: AgentConnected,
       timezone: 'Asia/Dhaka',
       groupState: getCurrentScheduleState(),
       schedule: getDashboardSchedule(),
@@ -529,7 +529,7 @@ const server = http.createServer((req, res) => {
   if (req.url === '/' || req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store, no-cache, must-revalidate' });
     const qrSection = currentQR
-      ? `<div class="qr-panel"><div class="qr-title">CONNECT WHATSAPP</div><div class="qr-sub">WhatsApp → Linked Devices → Link a Device</div><img src="${currentQR}" alt="WhatsApp QR Code"><div class="qr-help">Scan this QR code to connect the bot.</div></div>`
+      ? `<div class="qr-panel"><div class="qr-title">CONNECT WHATSAPP</div><div class="qr-sub">WhatsApp → Linked Devices → Link a Device</div><img src="${currentQR}" alt="WhatsApp QR Code"><div class="qr-help">Scan this QR code to connect the Agent.</div></div>`
       : '';
     const scheduleRows = getDashboardSchedule().map((item, i) => `
       <div class="timeline-row ${item.action === 'off' ? 'off' : 'on'}" style="--d:${i * 55}ms">
@@ -546,17 +546,17 @@ const server = http.createServer((req, res) => {
 :root{--bg:#020a06;--glass:rgba(6,28,18,.72);--glass2:rgba(5,19,13,.86);--line:rgba(72,255,194,.2);--cyan:#35f6e1;--green:#37ff72;--yellow:#ffe75a;--red:#ff718d;--muted:#66877c;--white:#effff9}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#020805;color:var(--white);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}body{overflow-x:hidden;background:radial-gradient(circle at 75% 20%,rgba(0,255,128,.11),transparent 26%),radial-gradient(circle at 30% 70%,rgba(0,255,220,.07),transparent 30%),linear-gradient(145deg,#020704,#04140c 52%,#020704)}button{font:inherit}.app{width:min(1180px,100%);margin:auto;padding:12px 18px 36px}.top{height:66px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:11px}.brand-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#0b5a3b,#21ff7c);color:#00170c;font-size:20px;box-shadow:0 0 30px rgba(33,255,124,.2)}.brand b{font-size:16px;letter-spacing:.7px}.brand small{display:block;color:#628074;font-size:9px;letter-spacing:1.8px;margin-top:3px}.status{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(3,19,12,.75);font-size:11px;color:#bce9dc}.status i{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 13px var(--green)}.layout{display:grid;grid-template-columns:1.12fr .88fr;gap:16px}.glass{border:1px solid var(--line);background:linear-gradient(145deg,rgba(7,31,20,.75),rgba(2,12,8,.88));border-radius:30px;box-shadow:0 28px 90px rgba(0,0,0,.45);backdrop-filter:blur(22px);overflow:hidden}.main-card{min-height:660px;padding:24px;position:relative}.tag{color:#6f9c8e;font-size:10px;letter-spacing:2.4px;text-transform:uppercase}.title{font-size:30px;line-height:1.05;margin-top:10px;font-weight:850}.title em{font-style:normal;color:var(--cyan)}.orb-area{height:390px;display:grid;place-items:center;position:relative}.orb{width:330px;height:330px;border-radius:50%;position:relative;border:1px solid rgba(53,246,225,.5);background:radial-gradient(circle at 50% 50%,rgba(0,255,201,.18),transparent 48%),repeating-radial-gradient(circle,rgba(53,246,225,.09) 0 1px,transparent 2px 13px);box-shadow:inset 0 0 60px rgba(53,246,225,.1),0 0 55px rgba(0,255,204,.13);animation:breathe 4.5s ease-in-out infinite}.orb:before,.orb:after{content:"";position:absolute;border-radius:50%;inset:11%;border:1px dashed rgba(53,246,225,.24);animation:spin 13s linear infinite}.orb:after{inset:26%;border-color:rgba(255,231,90,.28);animation-direction:reverse;animation-duration:9s}.core{position:absolute;inset:36%;border-radius:50%;background:radial-gradient(circle,#50ffe5 0,rgba(30,255,187,.24) 34%,transparent 72%);filter:blur(3px);box-shadow:0 0 60px rgba(53,246,225,.4)}.dotp{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);animation:float 3.7s ease-in-out infinite}.d1{left:16%;top:34%}.d2{right:16%;top:25%;background:var(--yellow);box-shadow:0 0 12px var(--yellow);animation-delay:.8s}.d3{left:23%;bottom:21%;animation-delay:1.4s}.d4{right:25%;bottom:17%;background:var(--yellow);box-shadow:0 0 12px var(--yellow);animation-delay:2s}.orb-label{position:absolute;bottom:27px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:3px;color:#a9d9ce}.controls{display:flex;align-items:center;justify-content:center;gap:10px}.live-btn{border:1px solid rgba(255,113,141,.6);background:rgba(70,12,25,.25);color:#ff9bad;border-radius:999px;padding:11px 22px;font-size:12px;font-weight:800}.speaker{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(0,180,210,.12);border:1px solid rgba(53,246,225,.15);color:var(--cyan)}.next{margin-top:18px;padding:15px 17px;border-radius:19px;background:rgba(0,10,7,.52);border:1px solid rgba(53,246,225,.12);display:flex;align-items:center;justify-content:space-between}.next small{display:block;color:#5e7b72;font-size:9px;letter-spacing:1.7px}.next strong{font-size:23px;display:block;margin-top:3px}.next span{font-size:11px;color:var(--cyan)}.next .count{font-size:11px;color:#88a79e;text-align:right}.side{display:grid;gap:16px}.panel{padding:19px}.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}.head b{font-size:13px;letter-spacing:.9px}.head span{font-size:9px;color:#5e7b72}.timeline{max-height:470px;overflow:auto;padding-right:3px}.timeline-row{display:grid;grid-template-columns:52px 15px 1fr 43px;align-items:center;gap:8px;min-height:49px;padding:5px 5px;border-radius:15px;animation:rise .35s both;animation-delay:var(--d)}.timeline-row:hover{background:rgba(53,246,225,.045)}.time{font-weight:850;font-size:12px}.rail{height:100%;position:relative;display:grid;place-items:center}.rail:before{content:"";position:absolute;top:0;bottom:0;width:1px;background:rgba(53,246,225,.13)}.rail i{z-index:1;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}.off .rail i{background:var(--red);box-shadow:0 0 10px var(--red)}.event b{display:block;font-size:10px}.event span{display:block;color:#5e7b72;font-size:8px;margin-top:2px}.state{text-align:center;font-size:8px;font-weight:900;padding:6px 3px;border-radius:8px;color:var(--green);background:rgba(55,255,114,.06);border:1px solid rgba(55,255,114,.12)}.off .state{color:#ff91a5;background:rgba(255,113,141,.06);border-color:rgba(255,113,141,.12)}.commands{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-height:350px;overflow:auto}.cmd{padding:10px;border:1px solid rgba(255,255,255,.06);border-radius:13px;background:rgba(255,255,255,.018)}.cmd code{color:var(--cyan);font:10px ui-monospace,monospace;word-break:break-word}.cmd span{display:block;color:#5e7b72;font-size:8px;margin-top:3px}.footer{text-align:center;color:#38574e;font-size:9px;margin:17px 0}.qr-panel{position:absolute;z-index:20;inset:70px 24px 24px;background:rgba(1,8,5,.97);border:1px solid var(--line);border-radius:26px;padding:20px;text-align:center}.qr-panel img{width:min(290px,82%);background:#fff;padding:9px;border-radius:16px;margin:20px auto}.qr-title{font-size:18px;font-weight:850}.qr-sub,.qr-help{font-size:9px;color:#78978d}@keyframes spin{to{transform:rotate(360deg)}}@keyframes breathe{50%{transform:scale(1.015) translateY(-5px)}}@keyframes float{50%{transform:translate(7px,-9px) scale(1.25)}}@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(max-width:850px){.layout{grid-template-columns:1fr}.main-card{min-height:620px}.orb-area{height:350px}}@media(max-width:520px){.app{padding:8px 9px 28px}.top{height:58px}.brand b{font-size:14px}.status{font-size:9px;padding:8px 10px}.main-card{padding:18px;min-height:590px;border-radius:24px}.title{font-size:25px}.orb-area{height:315px}.orb{width:255px;height:255px}.orb-label{bottom:24px}.panel{padding:15px;border-radius:22px}.timeline-row{grid-template-columns:48px 12px 1fr 40px}.event span{display:none}.commands{grid-template-columns:1fr 1fr}.cmd{padding:9px}.next strong{font-size:20px}}
 </style></head><body><main class="app">
-<header class="top"><div class="brand"><div class="brand-icon">✦</div><div><b>ST★RLIGHT FAMILY</b><small>BOT CONTROL CENTER</small></div></div><div class="status"><i id="dot"></i><span id="status">CHECKING...</span></div></header>
+<header class="top"><div class="brand"><div class="brand-icon">✦</div><div><b>ST★RLIGHT FAMILY</b><small>Agent CONTROL CENTER</small></div></div><div class="status"><i id="dot"></i><span id="status">CHECKING...</span></div></header>
 <section class="layout"><div class="glass main-card"><div class="tag">WHATSAPP AUTOMATION • LIVE</div><div class="title">Your family group,<br><em>always in control.</em></div>
-<div class="orb-area"><div class="orb"><div class="core"></div><i class="dotp d1"></i><i class="dotp d2"></i><i class="dotp d3"></i><i class="dotp d4"></i></div><div class="orb-label">BOT IS SPEAKING • LIVE</div></div>
+<div class="orb-area"><div class="orb"><div class="core"></div><i class="dotp d1"></i><i class="dotp d2"></i><i class="dotp d3"></i><i class="dotp d4"></i></div><div class="orb-label">Agent IS LIVE</div></div>
 <div class="controls"><div class="live-btn" id="groupState">● LIVE</div><div class="speaker">◉</div></div>
 <div class="next"><div><small>NEXT AUTOMATION</small><strong id="nextTime">--:--</strong><span id="nextAction">Loading...</span></div><div class="count" id="count">--</div></div>${qrSection}</div>
-<div class="side"><div class="glass panel"><div class="head"><b>TODAY'S AUTOMATION</b><span>ASIA/DHAKA • GMT+6</span></div><div class="timeline">${scheduleRows}</div></div>
-<div class="glass panel"><div class="head"><b>COMMAND LIST</b><span>BOT PREFIX ${BOT_PREFIX}</span></div><div class="commands">${commandCards}</div></div></div></section>
-<div class="footer">Starlight Family Bot • Dashboard v2.1 • Schedule & status update automatically</div></main>
+<div class="side"><div class="glass panel"><div class="head"><b>TODAY'S AUTOMATION</b><span>ASIA/SYLHET • GMT+6</span></div><div class="timeline">${scheduleRows}</div></div>
+<div class="glass panel"><div class="head"><b>COMMAND LIST</b><span>Agent PREFIX ${BOT_PREFIX}</span></div><div class="commands">${commandCards}</div></div></div></section>
+<div class="footer">Starlight Family Agent • Rahat Created This Agent</div></main>
 <script>
 let left=0;function tick(){left=Math.max(0,left-1);let h=Math.floor(left/3600),m=Math.floor(left%3600/60),s=left%60;document.getElementById('count').textContent=(h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
-async function refresh(){try{const r=await fetch('/api/status?t='+Date.now(),{cache:'no-store'}),d=await r.json();document.getElementById('status').textContent=d.connected?'WHATSAPP CONNECTED':'WAITING FOR WHATSAPP';document.getElementById('dot').style.background=d.connected?'var(--green)':'var(--yellow)';document.getElementById('groupState').textContent=d.groupState==='closed'?'■ GROUP OFF':'● GROUP ON';document.getElementById('groupState').style.color=d.groupState==='closed'?'var(--red)':'var(--green)';document.getElementById('nextTime').textContent=d.next.time;document.getElementById('nextAction').textContent=d.next.label;left=d.next.secondsUntil;tick()}catch(e){document.getElementById('status').textContent='DASHBOARD OFFLINE'}}refresh();setInterval(refresh,10000);setInterval(tick,1000);
+async function refresh(){try{const r=await fetch('/api/status?t='+Date.now(),{cache:'no-store'}),d=await r.json();document.getElementById('status').textContent=d.connected?'WHATSAPP CONNECTED':'WAITING FOR WHATSAPP';document.getElementById('dot').style.background=d.connected?'var(--green)':'var(--yellow)';document.getElementById('groupState').textContent=d.groupState==='closed'?'■ GROUP OFF':'● GROUP ON';document.getElementById('groupState').style.color=d.groupState==='closed'?'var(--red)':'var(--green)';document.getElementById('nextTime').textContent=d.next.time;document.getElementById('nextAction').textContent=d.next.label;left=d.next.secondsUntil;tick()}catch(e){document.getElementById('status').textContent='DASHBOARD ONLINE'}}refresh();setInterval(refresh,10000);setInterval(tick,1000);
 </script></body></html>`);
     return;
   }
@@ -693,7 +693,7 @@ async function handleCommand(sock, msg, command) {
   };
 
   if (name === 'help' || name === 'commands' || name === 'menu') {
-    return sendText(sock, groupId, `🤖 𝐒𝐭𝐚𝐫𝐥𝐢𝐠𝐡𝐭 𝐅𝐚𝐦𝐢𝐥𝐲 𝐁𝐨𝐭
+    return sendText(sock, groupId, `🤖 𝐒𝐭𝐚𝐫𝐥𝐢𝐠𝐡𝐭 𝐅𝐚𝐦𝐢𝐥𝐲 Agent
 
 👤 Member Commands
 /profile
@@ -711,32 +711,12 @@ async function handleCommand(sock, msg, command) {
 /remind 10m message
 
 🛡️ Admin Commands
-/off
-/on
-/notice your message
-/warn @member
-/warnings @member
-/unwarn @member
-/mute @member
-/unmute @member
-/kick @member
-/ban @member
-/unban @member
-/antlink on|off
-/antispam on|off
-/setrules your rules
-/birthday @member DD-MM-YYYY
-/birthdaylist
-/stats
-
-ℹ️ Command-এর আগে ${BOT_PREFIX} ব্যবহার করতে হবে।
-
-⚠️ Kick/Ban/Warning/Mute-এর জন্য bot-কে group admin করতে হবে।`);
+ALL ADMIN INBOXES ARE PROVIDED WITH THE ADMIN COMMAND.`);
   }
 
   if (name === 'off' || name === 'on') {
     if (!(await adminOnly()) || !botAdmin) {
-      if (admin && !botAdmin) await sendText(sock, groupId, '⚠️ Bot-কে আগে Group Admin করুন।');
+      if (admin && !botAdmin) await sendText(sock, groupId, '⚠️ Agent-কে আগে Group Admin করুন।');
       return;
     }
     try {
@@ -828,7 +808,7 @@ Warning: ${count}/3`, [target]);
     if (name === 'mute') {
       g.muted[target] = Date.now();
       saveData();
-      return sendText(sock, groupId, `🔇 ${mentionTag(target)}-কে mute করা হয়েছে।\nতার message bot delete করার চেষ্টা করবে।`, [target]);
+      return sendText(sock, groupId, `🔇 ${mentionTag(target)}-কে mute করা হয়েছে।\তার message Agent delete করার চেষ্টা করবে।`, [target]);
     }
     delete g.muted[target];
     saveData();
@@ -839,7 +819,7 @@ Warning: ${count}/3`, [target]);
     if (!(await adminOnly())) return;
     const target = targetFromMessage(msg);
     if (!target) return sendText(sock, groupId, `Usage: /${name} @member`);
-    if (!botAdmin) return sendText(sock, groupId, '⚠️ Bot-কে Group Admin করুন।');
+    if (!botAdmin) return sendText(sock, groupId, '⚠️ Agent-কে Group Admin করুন।');
 
     if (name === 'ban') {
       data.banned[groupId] = data.banned[groupId] || {};
@@ -1095,7 +1075,7 @@ Starlight Family-তে তোমাকে আন্তরিকভাবে স
 সবাই মিলে সুন্দরভাবে আড্ডা দিই এবং একে অপরকে সম্মান করি। 🌸
 
 📌 Group Rules দেখতে /rules লিখুন।
-🤖 Bot Commands দেখতে /help লিখুন।`, [participant]);
+🤖 Agent Commands দেখতে /help লিখুন।`, [participant]);
     }
   }
 
@@ -1103,7 +1083,7 @@ Starlight Family-তে তোমাকে আন্তরিকভাবে স
     g.leftToday += event.participants.length;
     saveData();
     for (const participant of event.participants) {
-      await sendText(sock, event.id, `👋 ${mentionTag(participant)} group থেকে চলে গেছেন।\nআশা করি আবার দেখা হবে! 🤍`, [participant]);
+      await sendText(sock, event.id, `👋 ${mentionTag(participant)} group থেকে চলে গেছেন।\আশা করি আবার দেখা হবে! 🤍`, [participant]);
     }
   }
 }
@@ -1135,7 +1115,7 @@ async function startBot() {
       currentQR = null;
       scheduleStarted = true;
       console.log('\n=================================');
-      console.log('✅ WhatsApp Bot Connected!');
+      console.log('✅ WhatsApp Agent Connected!');
       console.log('=================================\n');
       console.log('🇧🇩 Timezone: Asia/Dhaka');
       console.log('🤖 Features: Welcome, Schedule, Admin, Anti-Link, Anti-Spam, Stats, Birthday, Reminder, Quiz & Fun');
