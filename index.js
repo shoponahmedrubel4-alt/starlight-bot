@@ -210,7 +210,7 @@ async function sendText(sock, groupId, text, mentions = []) {
 
 async function setGroupMode(sock, groupId, action) {
   if (!(await botIsAdmin(sock, groupId))) {
-    throw new Error('Bot is not a group admin');
+    throw new Error('Agent is not a group admin');
   }
   return sock.groupSettingUpdate(
     groupId,
@@ -219,7 +219,7 @@ async function setGroupMode(sock, groupId, action) {
 }
 
 async function safeRemove(sock, groupId, jids) {
-  if (!(await botIsAdmin(sock, groupId))) throw new Error('Bot is not a group admin');
+  if (!(await botIsAdmin(sock, groupId))) throw new Error('Agent is not a group admin');
   const clean = [...new Set(jids.filter(Boolean))];
   if (!clean.length) return;
   return sock.groupParticipantsUpdate(groupId, clean, 'remove');
@@ -270,7 +270,7 @@ const schedule = [
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️`
   },
-  { time: '13:15', action: 'off', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
+  { time: '13:20', action: 'off', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
 
 𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
@@ -290,7 +290,7 @@ const schedule = [
 🫶🏻 সবাই আবার আড্ডায় ফিরে আসুন।
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️` },
-  { time: '16:45', action: 'off', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
+  { time: '16:20', action: 'off', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
 
 𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
@@ -301,7 +301,7 @@ const schedule = [
 𝑨𝒍𝒍𝒂𝒉 𝑯𝒂𝒇𝒆𝒛 🌸
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️` },
-  { time: '17:15', action: 'on', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
+  { time: '16:45', action: 'on', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
 
 𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
@@ -310,7 +310,7 @@ const schedule = [
 🫶🏻 সবাই আবার আড্ডায় ফিরে আসুন।
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️` },
-  { time: '18:45', action: 'off', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
+  { time: '17:35', action: 'off', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
 
 𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
@@ -321,7 +321,7 @@ const schedule = [
 𝑨𝒍𝒍𝒂𝒉 𝑯𝒂𝒇𝒆𝒛 🌸
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️` },
-  { time: '19:15', action: 'on', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
+  { time: '18:00', action: 'on', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
 
 𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
@@ -330,7 +330,7 @@ const schedule = [
 🫶🏻 সবাই আবার আড্ডায় ফিরে আসুন।
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️` },
-  { time: '20:00', action: 'off', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
+  { time: '20:20', action: 'off', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒇𝒇 🔕
 
 𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
@@ -341,7 +341,7 @@ const schedule = [
 𝑨𝒍𝒍𝒂𝒉 𝑯𝒂𝒇𝒆𝒛 🌸
 
 — 𝑺𝒕𝒂𝒓𝒍𝒊𝒈𝒉𝒕 𝑭𝒂𝒎𝒊𝒍𝒚 🕊️` },
-  { time: '20:30', action: 'on', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
+  { time: '20:45', action: 'on', message: `𝑮𝒓𝒐𝒖𝒑 𝑶𝒏 🟢
 
 𝑨𝒔𝒔𝒂𝒍𝒂𝒎𝒖𝒂𝒍𝒂𝒊𝒌𝒖𝒎 🤍
 
@@ -369,7 +369,7 @@ const funny = {
   roast: [
     '🔥 আজকের Roast: {name} — আপনার reply speed দেখে Wi‑Fi-ও insecure! 😂',
     '😂 {name}-কে active দেখা গেছে! নিশ্চয়ই আজ group-এ attendance দিতে এসেছেন!',
-    '👀 {name}, এত চুপ কেন? Bot আপনাকে suspicious list-এ রাখছে! 😆',
+    '👀 {name}, এত চুপ কেন? Agent আপনাকে suspicious list-এ রাখছে! 😆',
     '🤣 {name} online আছেন, কিন্তু কাজের বেলায় “network problem”!'
   ],
   fortune: [
@@ -409,9 +409,9 @@ const server = http.createServer((req, res) => {
   if (req.url === '/' || req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     const qrSection = currentQR
-      ? `<div class="qr-box"><h2>WhatsApp Login</h2><p>WhatsApp → Linked Devices → Link a Device</p><img src="${currentQR}" alt="QR Code"><p class="small">QR scan করে bot connect করুন।</p></div>`
-      : `<div class="status">${botConnected ? '✅ WhatsApp Bot Connected' : '⏳ Waiting for WhatsApp...'}</div>`;
-    res.end(`<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Starlight Family Bot</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;background:linear-gradient(135deg,#07111f,#101b32,#17243c);color:#fff;padding:20px}.card{width:100%;max-width:460px;padding:30px;border-radius:28px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);box-shadow:0 25px 70px rgba(0,0,0,.45);text-align:center;backdrop-filter:blur(20px)}.logo{font-size:26px;font-weight:700;margin-bottom:8px}.subtitle{opacity:.65;font-size:14px;margin-bottom:25px}.qr-box{background:#fff;color:#111;padding:20px;border-radius:22px}.qr-box img{width:100%;max-width:300px;display:block;margin:20px auto}.small{opacity:.65}.status{padding:25px;border-radius:18px;background:rgba(255,255,255,.08);font-size:18px}.footer{margin-top:20px;font-size:12px;opacity:.45}</style></head><body><div class="card"><div class="logo">Starlight Family</div><div class="subtitle">WhatsApp Automation Bot • v2</div>${qrSection}<div class="footer">Bot Server • Asia/Dhaka</div></div></body></html>`);
+      ? `<div class="qr-box"><h2>WhatsApp Login</h2><p>WhatsApp → Linked Devices → Link a Device</p><img src="${currentQR}" alt="QR Code"><p class="small">QR scan করে Agent connect করুন।</p></div>`
+      : `<div class="status">${botConnected ? '✅ WhatsApp Agent Connected' : '⏳ Waiting for WhatsApp...'}</div>`;
+    res.end(`<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Starlight Family Agent</title><style>*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Arial,sans-serif;background:linear-gradient(135deg,#07111f,#101b32,#17243c);color:#fff;padding:20px}.card{width:100%;max-width:460px;padding:30px;border-radius:28px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);box-shadow:0 25px 70px rgba(0,0,0,.45);text-align:center;backdrop-filter:blur(20px)}.logo{font-size:26px;font-weight:700;margin-bottom:8px}.subtitle{opacity:.65;font-size:14px;margin-bottom:25px}.qr-box{background:#fff;color:#111;padding:20px;border-radius:22px}.qr-box img{width:100%;max-width:300px;display:block;margin:20px auto}.small{opacity:.65}.status{padding:25px;border-radius:18px;background:rgba(255,255,255,.08);font-size:18px}.footer{margin-top:20px;font-size:12px;opacity:.45}</style></head><body><div class="card"><div class="logo">Starlight Family</div><div class="subtitle">WhatsApp Automation Agent • v2</div>${qrSection}<div class="footer">Agent Server • Asia/Dhaka</div></div></body></html>`);
     return;
   }
   res.writeHead(404);
@@ -547,7 +547,7 @@ async function handleCommand(sock, msg, command) {
   };
 
   if (name === 'help' || name === 'commands' || name === 'menu') {
-    return sendText(sock, groupId, `🤖 𝐒𝐭𝐚𝐫𝐥𝐢𝐠𝐡𝐭 𝐅𝐚𝐦𝐢𝐥𝐲 𝐁𝐨𝐭
+    return sendText(sock, groupId, `🤖 𝐒𝐭𝐚𝐫𝐥𝐢𝐠𝐡𝐭 𝐅𝐚𝐦𝐢𝐥𝐲 Agent
 
 👤 Member Commands
 /profile
@@ -585,12 +585,12 @@ async function handleCommand(sock, msg, command) {
 
 ℹ️ Command-এর আগে ${BOT_PREFIX} ব্যবহার করতে হবে।
 
-⚠️ Kick/Ban/Warning/Mute-এর জন্য bot-কে group admin করতে হবে।`);
+⚠️ Kick/Ban/Warning/Mute-এর জন্য Agent-কে group admin করতে হবে।`);
   }
 
   if (name === 'off' || name === 'on') {
     if (!(await adminOnly()) || !botAdmin) {
-      if (admin && !botAdmin) await sendText(sock, groupId, '⚠️ Bot-কে আগে Group Admin করুন।');
+      if (admin && !botAdmin) await sendText(sock, groupId, '⚠️ Agent-কে আগে Group Admin করুন।');
       return;
     }
     try {
@@ -682,7 +682,7 @@ Warning: ${count}/3`, [target]);
     if (name === 'mute') {
       g.muted[target] = Date.now();
       saveData();
-      return sendText(sock, groupId, `🔇 ${mentionTag(target)}-কে mute করা হয়েছে।\nতার message bot delete করার চেষ্টা করবে।`, [target]);
+      return sendText(sock, groupId, `🔇 ${mentionTag(target)}-কে mute করা হয়েছে।\তার message Agent delete করার চেষ্টা করবে।`, [target]);
     }
     delete g.muted[target];
     saveData();
@@ -693,7 +693,7 @@ Warning: ${count}/3`, [target]);
     if (!(await adminOnly())) return;
     const target = targetFromMessage(msg);
     if (!target) return sendText(sock, groupId, `Usage: /${name} @member`);
-    if (!botAdmin) return sendText(sock, groupId, '⚠️ Bot-কে Group Admin করুন।');
+    if (!botAdmin) return sendText(sock, groupId, '⚠️ Agent-কে Group Admin করুন।');
 
     if (name === 'ban') {
       data.banned[groupId] = data.banned[groupId] || {};
@@ -949,7 +949,7 @@ Starlight Family-তে তোমাকে আন্তরিকভাবে স
 সবাই মিলে সুন্দরভাবে আড্ডা দিই এবং একে অপরকে সম্মান করি। 🌸
 
 📌 Group Rules দেখতে /rules লিখুন।
-🤖 Bot Commands দেখতে /help লিখুন।`, [participant]);
+🤖 Agent Commands দেখতে /help লিখুন।`, [participant]);
     }
   }
 
@@ -989,7 +989,7 @@ async function startBot() {
       currentQR = null;
       scheduleStarted = true;
       console.log('\n=================================');
-      console.log('✅ WhatsApp Bot Connected!');
+      console.log('✅ WhatsApp Agent Connected!');
       console.log('=================================\n');
       console.log('🇧🇩 Timezone: Asia/Dhaka');
       console.log('🤖 Features: Welcome, Schedule, Admin, Anti-Link, Anti-Spam, Stats, Birthday, Reminder, Quiz & Fun');
